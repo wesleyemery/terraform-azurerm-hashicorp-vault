@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-init-job
+  labels:
+    aadpodidbinding: {{ .Values.identityName }}
+spec:
+  template:
+    metadata:
+      labels:
+        aadpodidbinding: {{ .Values.identityName }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: vault-init-job
+          image: "python:3.8.2-slim-buster"
+          command: ["/usr/local/bin/python", "-c", {{ (tpl (.Files.Get "scripts/vault-init.py") . | quote ) }} ]
