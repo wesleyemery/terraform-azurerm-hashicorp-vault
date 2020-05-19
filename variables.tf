@@ -45,6 +45,11 @@ variable "kubectl_cluster_ca_certificate" {
   type        = string
 }
 
+variable "kubernetes_namespace" {
+  description = "kubernetes namespace where vault will be installed"
+  type        = string
+}
+
 # AAD
 #variable "azure_key_vault_name" {
 #  description = "name of Azure Key Vault where unseal keys are stored"

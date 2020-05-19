@@ -1,5 +1,9 @@
 terraform {
   required_version = ">= 0.12.10"
+  
+  required_providers {
+    helm = ">= 1.2.1"
+  }
 }
 
 provider "azurerm" {

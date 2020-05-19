@@ -51,6 +51,7 @@ resource "azurerm_key_vault_access_policy" "current" {
 }
 
 resource "azurerm_key_vault_key" "generated" {
+  depends_on   = [azurerm_key_vault_access_policy.current]
   name         = "hashicorp-vault-key"
   key_vault_id = azurerm_key_vault.kv.id
   key_type     = "RSA"
@@ -66,6 +67,19 @@ resource "azurerm_key_vault_key" "generated" {
   ]
 
   tags                 = var.tags
+}
+
+resource "azurerm_key_vault_secret" "vault_init" {
+  depends_on   = [azurerm_key_vault_access_policy.current]
+  name         = "hashicorp-vault-init"
+  value        = ""
+  key_vault_id = azurerm_key_vault.kv.id
+
+  tags           = var.tags
+
+  lifecycle {
+    ignore_changes = [value]
+  }
 }
 
 resource "azurerm_user_assigned_identity" "vault" {
@@ -107,18 +121,6 @@ resource "azurerm_key_vault_access_policy" "vault_init" {
   ]
 }
 
-resource "azurerm_key_vault_secret" "vault_init" {
-  name         = "hashicorp-vault-init"
-  value        = ""
-  key_vault_id = azurerm_key_vault.kv.id
-
-  tags           = var.tags
-
-  lifecycle {
-    ignore_changes = [value]
-  }
-}
-
 module "vault_identity" {
   source = "/Users/tmiller/gitlab-repos/tfe/terraform-azurerm-kubernetes/identity"
 
@@ -126,8 +128,6 @@ module "vault_identity" {
     kubectl_client_certificate     = var.kubectl_client_certificate
     kubectl_client_key             = var.kubectl_client_key
     kubectl_cluster_ca_certificate = var.kubectl_cluster_ca_certificate
-
-    kubernetes_namespace = "default"
 
     identity_name        = azurerm_user_assigned_identity.vault.name
     identity_client_id   = azurerm_user_assigned_identity.vault.client_id
@@ -143,8 +143,6 @@ module "vault_init_identity" {
     kubectl_client_key             = var.kubectl_client_key
     kubectl_cluster_ca_certificate = var.kubectl_cluster_ca_certificate
 
-    kubernetes_namespace = "default"
-
     identity_name        = azurerm_user_assigned_identity.vault_init.name
     identity_client_id   = azurerm_user_assigned_identity.vault_init.client_id
     identity_resource_id = azurerm_user_assigned_identity.vault_init.id
@@ -153,8 +151,12 @@ module "vault_init_identity" {
 
 resource "helm_release" "vault" {
   depends_on = [module.vault_identity]
-  name       = "vault"
-  chart  = "https://github.com/hashicorp/vault-helm/archive/v${var.vault_helm_chart_version}.tar.gz"
+
+  name      = "vault"
+  chart     = "https://github.com/hashicorp/vault-helm/archive/v${var.vault_helm_chart_version}.tar.gz"
+
+  namespace        = var.kubernetes_namespace
+  create_namespace = true
 
   values = [
     templatefile("${path.module}/vault_config.yaml.tmpl", {
@@ -182,6 +184,8 @@ resource "helm_release" "vault_init" {
   depends_on = [module.vault_init_identity,helm_release.vault]
   name       = "vault-init"
   chart      = "${path.module}/charts/init"
+
+  namespace  = var.kubernetes_namespace
 
   set {
     name  = "azureKeyVaultSecretTags"
