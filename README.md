@@ -11,7 +11,7 @@ This module will deploy hashicorp vault into a pre-existing AKS cluster
 | Name | Version |
 |------|---------|
 | azurerm | >= 2.0.0 |
-| helm | n/a |
+| helm | >= 1.2.1 |
 
 ## Inputs
 
@@ -22,6 +22,7 @@ This module will deploy hashicorp vault into a pre-existing AKS cluster
 | kubectl\_client\_key | kubernetes certificate key | `string` | n/a | yes |
 | kubectl\_cluster\_ca\_certificate | kubernetes certificate bundle | `string` | n/a | yes |
 | kubectl\_host | kubernetes hostname | `string` | n/a | yes |
+| kubernetes\_namespace | kubernetes namespace where vault will be installed | `string` | `"default"` | no |
 | location | Azure Region | `string` | n/a | yes |
 | names | names to be applied to resources | `map(string)` | n/a | yes |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |
