@@ -31,6 +31,12 @@ variable "kubernetes_namespace" {
   default     = "default"
 }
 
+variable "kubernetes_node_selector" {
+  description = "kubernetes node selector labels"
+  type        = map(string)
+  default     = {}
+}
+
 # AAD
 variable "identity_name" {
   description = "name for Azure identity to be used by AAD"
@@ -48,6 +54,12 @@ variable "vault_version" {
   description = "version of Vault to install"
   type        = string
   default     = "1.4.0"
+}
+
+variable "vault_agent_injector_enabled" {
+  description = "enable Vault Agent Injector"
+  type        = bool
+  default     = true
 }
 
 variable "vault_agent_injector_version" {
@@ -114,4 +126,10 @@ variable "vault_audit_data_storage_size" {
   description = "vault audit logs storage size"
   type        = string
   default     = "10Gi"
+}
+
+variable "additional_yaml_config" {
+  description = "yaml config for helm chart to be processed last"
+  type        = string
+  default     = ""
 }
