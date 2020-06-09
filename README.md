@@ -118,6 +118,19 @@ module "aks" {
 
 }
 
+resource "azurerm_kubernetes_cluster_node_pool" "b2s" {
+  name                  = "b2ms"
+  kubernetes_cluster_id = module.aks.id
+  vm_size               = "Standard_B2s"
+  availability_zones    = [1,2,3]
+  enable_auto_scaling   = true
+
+  min_count      = 1
+  max_count      = 5
+
+  tags = module.metadata.tags
+}
+
 # Kubernetes
 ## (Optional) add new storage class for geo-redundant storage
 provider "kubernetes" {
@@ -165,7 +178,10 @@ module "aad-pod-identity" {
 }
 
 # Vault
-## This will setup a vault cluster with a raft storage backend using azurefile GRS
+## This will setup a vault cluster with a raft storage backend using:
+##   - azurefile GRS storage
+##   - running on the b2ms node pool
+##   - replica count of 5
 module "vault" {
   source = "git@github.com:Azure-Terraform/terraform-azurerm-hashicorp-vault.git"
 
@@ -189,6 +205,9 @@ module "vault" {
   names = module.metadata.names
   tags  = module.metadata.tags
 
+  kubernetes_namespace     = "hashicorp-vault"
+  kubernetes_node_selector = {"agentpool" = "b2ms"}
+
   azure_key_vault_id                  = module.key_vault.id
   azure_key_vault_name                = module.key_vault.name
   azure_key_vault_resource_group_name = module.key_vault.resource_group_name
@@ -198,6 +217,12 @@ module "vault" {
   vault_version                = "1.4.0"
   vault_agent_injector_version = "0.3.0"
   vault_data_storage_class     = "azurefile-grs"
+
+  additional_yaml_config = <<-EOT
+  server:
+    ha:
+      replicas: 5
+  EOT
 
 }
 ~~~~
