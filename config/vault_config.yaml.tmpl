@@ -1,6 +1,10 @@
 server:
   image:
     tag: ${vault_version}
+%{ if node_selector != "" ~}
+  nodeSelector: |
+    ${node_selector}
+%{ endif ~}
 %{ if enable_data_storage == true ~}
   dataStorage:
     enabled: ${enable_data_storage}
@@ -72,6 +76,11 @@ server:
   extraLabels:
     aadpodidbinding: "${pod_identity}"
 injector:
+  enabled: ${injector_enabled}
+%{ if node_selector != "" ~}
+  nodeSelector: |
+    ${node_selector}
+%{ endif ~}
   image:
     tag: ${injector_version}
   agentImage:

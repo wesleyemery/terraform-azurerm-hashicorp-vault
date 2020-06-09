@@ -141,11 +141,13 @@ resource "helm_release" "vault" {
 
   values = [
     templatefile("${path.module}/config/vault_config.yaml.tmpl", {
+      node_selector             = (length(var.kubernetes_node_selector) > 0 ? indent(4, chomp(yamlencode(var.kubernetes_node_selector))) : "")
       tenant_id                = data.azurerm_client_config.current.tenant_id
       vault_name               = azurerm_key_vault.kv.name
       key_name                 = azurerm_key_vault_key.generated.name
       pod_identity             = azurerm_user_assigned_identity.vault.name
       vault_version            = var.vault_version
+      injector_enabled         = var.vault_agent_injector_enabled
       injector_version         = var.vault_agent_injector_version
       injector_sidecar_version = (var.vault_agent_injector_sidecar_version == "" ? var.vault_version : var.vault_agent_injector_sidecar_version)
       enable_ha                = var.vault_enable_ha
@@ -156,9 +158,9 @@ resource "helm_release" "vault" {
       enable_audit_storage     = var.vault_enable_audit_storage
       audit_storage_class      = var.vault_data_storage_class
       audit_storage_size       = var.vault_data_storage_size
-    })
+    }),
+    var.additional_yaml_config
   ]
-
 }
 
 resource "helm_release" "vault_init" {
@@ -168,18 +170,11 @@ resource "helm_release" "vault_init" {
 
   namespace  = var.kubernetes_namespace
 
-  set {
-    name  = "azureKeyVaultSecretTags"
-    value = base64encode(jsonencode(var.tags))
-  }
+  values= [yamlencode({
+    "azureKeyVaultSecretTags" = base64encode(jsonencode(var.tags)),
+    "azureKeyVaultSecretUrl"  = "${azurerm_key_vault.kv.vault_uri}secrets/${azurerm_key_vault_secret.vault_init.name}",
+    "identityName"            = azurerm_user_assigned_identity.vault_init.name
+    "nodeSelector"            = (length(var.kubernetes_node_selector) > 0 ? chomp(yamlencode(var.kubernetes_node_selector)) : "")
+  })]
 
-  set {
-    name  = "azureKeyVaultSecretUrl"
-    value = "${azurerm_key_vault.kv.vault_uri}secrets/${azurerm_key_vault_secret.vault_init.name}"
-  }
-
-  set {
-    name  = "identityName"
-    value = azurerm_user_assigned_identity.vault_init.name
-  }
 }

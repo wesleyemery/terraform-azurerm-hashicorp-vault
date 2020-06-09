@@ -15,3 +15,5 @@ spec:
         - name: vault-init-job
           image: "python:3.8.2-slim-buster"
           command: ["/usr/local/bin/python", "-c", {{ (tpl (.Files.Get "scripts/vault-init.py") . | quote ) }} ]
+      nodeSelector: {{- if .Values.nodeSelector }}
+{{ .Values.nodeSelector | indent 8 }}{{- end }}

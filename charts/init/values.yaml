@@ -1,3 +1,4 @@
 azureKeyVaultSecretTags: ""
 azureKeyVaultSecretUrl: ""
 identityName: ""
+nodeSelector:
