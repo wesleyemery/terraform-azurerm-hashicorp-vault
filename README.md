@@ -17,13 +17,16 @@ This module will deploy hashicorp vault into a pre-existing AKS cluster
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
+| additional\_yaml\_config | yaml config for helm chart to be processed last | `string` | `""` | no |
 | identity\_name | name for Azure identity to be used by AAD | `string` | `"aks-aad"` | no |
 | kubernetes\_namespace | kubernetes namespace where vault will be installed | `string` | `"default"` | no |
+| kubernetes\_node\_selector | kubernetes node selector labels | `map(string)` | `{}` | no |
 | location | Azure Region | `string` | n/a | yes |
 | names | names to be applied to resources | `map(string)` | n/a | yes |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |
 | subscription\_id | Azure Subscription ID | `string` | n/a | yes |
 | tags | tags to be applied to resources | `map(string)` | n/a | yes |
+| vault\_agent\_injector\_enabled | enable Vault Agent Injector | `bool` | `true` | no |
 | vault\_agent\_injector\_sidecar\_version | version of Vault Agent Injectort sidecar to install (defaults to <vault\_version>) | `string` | `""` | no |
 | vault\_agent\_injector\_version | version of Vault Agent Injector to install | `string` | `"0.3.0"` | no |
 | vault\_audit\_data\_storage\_size | vault audit logs storage size | `string` | `"10Gi"` | no |
