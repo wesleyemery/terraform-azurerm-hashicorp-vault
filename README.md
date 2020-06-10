@@ -24,7 +24,6 @@ This module will deploy hashicorp vault into a pre-existing AKS cluster
 | location | Azure Region | `string` | n/a | yes |
 | names | names to be applied to resources | `map(string)` | n/a | yes |
 | resource\_group\_name | Resource group name | `string` | n/a | yes |
-| subscription\_id | Azure Subscription ID | `string` | n/a | yes |
 | tags | tags to be applied to resources | `map(string)` | n/a | yes |
 | vault\_agent\_injector\_enabled | enable Vault Agent Injector | `bool` | `true` | no |
 | vault\_agent\_injector\_sidecar\_version | version of Vault Agent Injectort sidecar to install (defaults to <vault\_version>) | `string` | `""` | no |
@@ -199,7 +198,6 @@ module "vault" {
   kubectl_client_key             = module.aks.client_key
   kubectl_cluster_ca_certificate = module.aks.cluster_ca_certificate
 
-  subscription_id                 = module.subscription.output.subscription_id
   aks_service_principal_client_id = module.aks.service_principal_client_id
 
   resource_group_name = module.resource_group.name

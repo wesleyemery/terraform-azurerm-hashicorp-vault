@@ -3,11 +3,6 @@ terraform {
   
   required_providers {
     helm = ">= 1.2.1"
+    azurerm = ">= 2.0.0"
   }
-}
-
-provider "azurerm" {
-  version = ">= 2.0.0"
-  features {}
-  subscription_id = var.subscription_id
 }
