@@ -199,7 +199,6 @@ module "vault" {
   kubectl_client_key             = module.aks.client_key
   kubectl_cluster_ca_certificate = module.aks.cluster_ca_certificate
 
-  subscription_id                 = module.subscription.output.subscription_id
   aks_service_principal_client_id = module.aks.service_principal_client_id
 
   resource_group_name = module.resource_group.name
