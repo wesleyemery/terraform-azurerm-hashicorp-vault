@@ -191,27 +191,14 @@ module "vault" {
     helm = helm.aks
   }
 
-  kubectl_host                   = module.aks.host
-  kubectl_username               = module.aks.username
-  kubectl_password               = module.aks.password
-  kubectl_client_certificate     = module.aks.client_certificate
-  kubectl_client_key             = module.aks.client_key
-  kubectl_cluster_ca_certificate = module.aks.cluster_ca_certificate
-
-  aks_service_principal_client_id = module.aks.service_principal_client_id
-
+  subscription_id     = module.subscription.output.subscription_id
   resource_group_name = module.resource_group.name
   location            = module.resource_group.location
-
   names = module.metadata.names
   tags  = module.metadata.tags
 
   kubernetes_namespace     = "hashicorp-vault"
   kubernetes_node_selector = {"agentpool" = "b2ms"}
-
-  azure_key_vault_id                  = module.key_vault.id
-  azure_key_vault_name                = module.key_vault.name
-  azure_key_vault_resource_group_name = module.key_vault.resource_group_name
 
   vault_enable_ha              = true
   vault_enable_raft_backend    = true
@@ -226,4 +213,7 @@ module "vault" {
   EOT
 
 }
+
+output "aks_login" {
+  value = "az aks get-credentials --name ${module.aks.name} --resource-group ${module.resource_group.name}"
 ~~~~
