@@ -30,6 +30,7 @@ resource "azurerm_key_vault_access_policy" "current" {
     "delete",
     "get",
     "list",
+    "update",
   ]
 
   secret_permissions = [
@@ -147,11 +148,15 @@ resource "helm_release" "vault" {
       key_name                 = azurerm_key_vault_key.generated.name
       pod_identity             = azurerm_user_assigned_identity.vault.name
       vault_version            = var.vault_version
+      ingress_enabled          = var.vault_ingress_enabled
+      ingress_hostname         = var.vault_ingress_hostname
+      ingress_tls_secret_name  = var.vault_ingress_tls_secret_name
       injector_enabled         = var.vault_agent_injector_enabled
       injector_version         = var.vault_agent_injector_version
       injector_sidecar_version = (var.vault_agent_injector_sidecar_version == "" ? var.vault_version : var.vault_agent_injector_sidecar_version)
       enable_ha                = var.vault_enable_ha
       enable_raft_backend      = var.vault_enable_raft_backend
+      enable_ui                = var.vault_enable_ui
       enable_data_storage      = var.vault_enable_data_storage
       data_storage_class       = var.vault_data_storage_class
       data_storage_size        = var.vault_data_storage_size

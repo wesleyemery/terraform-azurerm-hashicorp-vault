@@ -20,7 +20,7 @@ server:
 %{ if enable_ha == false ~}
   standalone:
     config: |
-      ui = true
+      ui = ${enable_ui}
       listener "tcp" {
         tls_disable = 1
         address = "[::]:8200"
@@ -39,7 +39,7 @@ server:
     enabled: ${enable_ha}
 %{ if enable_raft_backend == false ~}
     config: |
-      ui = true
+      ui = ${enable_ui}
       listener "tcp" {
         tls_disable = 1
         address = "[::]:8200"
@@ -54,7 +54,7 @@ server:
     raft:
       enabled: ${enable_raft_backend}
       config: |
-        ui = true
+        ui = ${enable_ui}
         listener "tcp" {
           tls_disable = 1
           address = "[::]:8200"
@@ -72,6 +72,22 @@ server:
           }
         }
 %{ endif ~}
+%{ endif ~}
+%{ if ingress_enabled == true ~}
+  ingress:
+    enabled: true
+    labels:
+      traffic: external
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - host: ${ingress_hostname}
+        paths:
+          - /
+    tls:
+      - secretName: ${ingress_tls_secret_name}
+        hosts:
+          - ${ingress_hostname}
 %{ endif ~}
   extraLabels:
     aadpodidbinding: "${pod_identity}"
