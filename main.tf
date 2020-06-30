@@ -168,6 +168,13 @@ resource "helm_release" "vault" {
   ]
 }
 
+resource "helm_release" "vault_rbac" {
+  depends_on = [helm_release.vault]
+  name       = "vault-rbac"
+  chart      = "${path.module}/charts/rbac"
+  namespace  = var.kubernetes_namespace
+}
+
 resource "helm_release" "vault_init" {
   depends_on = [module.vault_init_identity,helm_release.vault]
   name       = "vault-init"

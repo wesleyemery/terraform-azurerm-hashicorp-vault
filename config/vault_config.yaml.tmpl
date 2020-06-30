@@ -50,6 +50,7 @@ server:
         vault_name = "${vault_name}"
         key_name   = "${key_name}"
       }
+      service_registration "kubernetes" {}
 %{ else ~}
     raft:
       enabled: ${enable_raft_backend}
@@ -71,6 +72,7 @@ server:
             leader_api_addr = "http://vault-0.vault-internal:8200"
           }
         }
+        service_registration "kubernetes" {}
 %{ endif ~}
 %{ endif ~}
 %{ if ingress_enabled == true ~}
@@ -79,6 +81,7 @@ server:
     labels:
       traffic: external
     annotations:
+      |
       kubernetes.io/ingress.class: nginx
     hosts:
       - host: ${ingress_hostname}
