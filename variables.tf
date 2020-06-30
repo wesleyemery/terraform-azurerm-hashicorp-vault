@@ -42,13 +42,13 @@ variable "identity_name" {
 variable "vault_helm_chart_version" {
   description = "version of vault helm chart to use"
   type        = string
-  default     = "0.5.0"
+  default     = "0.6.0"
 }
 
 variable "vault_version" {
   description = "version of Vault to install"
   type        = string
-  default     = "1.4.0"
+  default     = "1.4.2"
 }
 
 variable "vault_agent_injector_enabled" {

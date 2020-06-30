@@ -47,7 +47,7 @@ TOKEN_URL_HEADERS={'Metadata': 'true'}
 
 print('Getting Azure API Token.....')
 try:
-  token_request = az_api.get(url=TOKEN_URL, params=TOKEN_PARAMS, headers=TOKEN_URL_HEADERS) 
+  token_request = az_api.get(url=TOKEN_URL, params=TOKEN_PARAMS, headers=TOKEN_URL_HEADERS, timeout=5) 
 except:
   raise Exception('There was an problem connecting to the Azure metadata API from the vault-init pod')
 
@@ -67,7 +67,7 @@ AZURE_KEY_VAULT_HEADERS={'Authorization': "Bearer %s" % (access_token)}
 
 print('Testing connectivity to Azure Key Vault secret.....')
 try:
-  azure_key_vault_request = az_api.get(url=AZURE_KEY_VAULT_SECRET_URL, params=AZURE_KEY_VAULT_PARAMS, headers=AZURE_KEY_VAULT_HEADERS)
+  azure_key_vault_request = az_api.get(url=AZURE_KEY_VAULT_SECRET_URL, params=AZURE_KEY_VAULT_PARAMS, headers=AZURE_KEY_VAULT_HEADERS, timeout=5)
 except:
   raise Exception('There was an problem connecting to the Azure Key Vault API from the vault-init pod')
 
@@ -82,7 +82,7 @@ VAULT_HEALTH_PARAMS={'uninitcode': '999'}
 
 print('Testing Hashicorp Vault health.....')
 try:
-  vault_health_request = vault_api.get(url=VAULT_HEALTH_URL, params=VAULT_HEALTH_PARAMS)
+  vault_health_request = vault_api.get(url=VAULT_HEALTH_URL, params=VAULT_HEALTH_PARAMS, timeout=5)
 except:
   raise Exception('There was an problem getting the Hashicorp Vault health status')
 

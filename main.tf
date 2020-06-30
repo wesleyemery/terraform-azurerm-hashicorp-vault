@@ -6,8 +6,8 @@ resource "azurerm_key_vault" "kv" {
 
   sku_name = "standard"
 
-#  purge_protection_enabled = var.purge_protection_enabled
-#  soft_delete_enabled      = var.soft_delete_enabled
+  purge_protection_enabled = false
+  soft_delete_enabled      = true
 
   network_acls {
     default_action = "Allow"
