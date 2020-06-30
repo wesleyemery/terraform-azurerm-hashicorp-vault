@@ -37,7 +37,11 @@ This module will deploy hashicorp vault into a pre-existing AKS cluster
 | vault\_enable\_data\_storage | enable data storage for raft/file storage backend | `bool` | `true` | no |
 | vault\_enable\_ha | enable ha (clustering) | `bool` | `true` | no |
 | vault\_enable\_raft\_backend | enable raft storage backend | `bool` | `true` | no |
+| vault\_enable\_ui | enable vault ui | `bool` | `true` | no |
 | vault\_helm\_chart\_version | version of vault helm chart to use | `string` | `"0.5.0"` | no |
+| vault\_ingress\_enabled | enable ingress controller | `bool` | `false` | no |
+| vault\_ingress\_hostname | hostname for the ingress controller | `string` | `""` | no |
+| vault\_ingress\_tls\_secret\_name | enable ingress controller | `string` | `""` | no |
 | vault\_version | version of Vault to install | `string` | `"1.4.0"` | no |
 
 ## Outputs
