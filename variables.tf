@@ -42,13 +42,13 @@ variable "identity_name" {
 variable "vault_helm_chart_version" {
   description = "version of vault helm chart to use"
   type        = string
-  default     = "0.5.0"
+  default     = "0.6.0"
 }
 
 variable "vault_version" {
   description = "version of Vault to install"
   type        = string
-  default     = "1.4.0"
+  default     = "1.4.2"
 }
 
 variable "vault_agent_injector_enabled" {
@@ -77,6 +77,12 @@ variable "vault_enable_ha" {
 
 variable "vault_enable_raft_backend" {
   description = "enable raft storage backend"
+  type        = bool
+  default     = true
+}
+
+variable "vault_enable_ui" {
+  description = "enable vault ui"
   type        = bool
   default     = true
 }
@@ -121,6 +127,24 @@ variable "vault_audit_data_storage_size" {
   description = "vault audit logs storage size"
   type        = string
   default     = "10Gi"
+}
+
+variable "vault_ingress_enabled" {
+  description = "enable ingress controller"
+  type        = bool
+  default     = false
+}
+
+variable "vault_ingress_hostname" {
+  description = "hostname for the ingress controller"
+  type        = string
+  default     = ""
+}
+
+variable "vault_ingress_tls_secret_name" {
+  description = "enable ingress controller"
+  type        = string
+  default     = ""
 }
 
 variable "additional_yaml_config" {
