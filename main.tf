@@ -23,8 +23,6 @@ resource "azurerm_key_vault" "kv" {
   tags = merge(var.tags, {
            "purpose"     = "HashiCorp Vault initialization info"
          })
-                  
-
 }
 
 resource "azurerm_key_vault_access_policy" "current" {
