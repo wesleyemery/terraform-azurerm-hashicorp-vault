@@ -12,6 +12,7 @@ This module will deploy hashicorp vault into a pre-existing AKS cluster
 |------|---------|
 | azurerm | >= 2.0.0 |
 | helm | >= 1.2.1 |
+| random | n/a |
 
 ## Inputs
 
