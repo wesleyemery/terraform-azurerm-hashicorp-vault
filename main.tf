@@ -1,5 +1,11 @@
+resource "random_string"  "kv" {
+  length  = 3
+  upper   = false
+  special = false
+}
+
 resource "azurerm_key_vault" "kv" {
-  name                 = "${var.names.product_group}${var.names.subscription_type}hashivault" 
+  name                 = "${var.names.product_group}${var.names.subscription_type}hcv${random_string.kv.result}" 
   location             = var.location
   resource_group_name  = var.resource_group_name
   tenant_id            = data.azurerm_client_config.current.tenant_id
@@ -14,7 +20,10 @@ resource "azurerm_key_vault" "kv" {
     bypass         = "AzureServices"
   }
 
-  tags = var.tags
+  tags = merge(var.tags, {
+           "purpose"     = "HashiCorp Vault initialization info"
+         })
+                  
 
 }
 
@@ -114,21 +123,19 @@ resource "azurerm_key_vault_access_policy" "vault_init" {
 }
 
 module "vault_identity" {
-  source = "git@github.com:Azure-Terraform/terraform-azurerm-kubernetes.git//aad-pod-identity/identity"
+  source = "git@github.com:Azure-Terraform/terraform-azurerm-kubernetes.git//aad-pod-identity/identity?ref=v1.1.0"
 
   identity_name        = azurerm_user_assigned_identity.vault.name
   identity_client_id   = azurerm_user_assigned_identity.vault.client_id
   identity_resource_id = azurerm_user_assigned_identity.vault.id
-
 }
 
 module "vault_init_identity" {
-  source = "git@github.com:Azure-Terraform/terraform-azurerm-kubernetes.git//aad-pod-identity/identity"
+  source = "git@github.com:Azure-Terraform/terraform-azurerm-kubernetes.git//aad-pod-identity/identity?ref=v1.1.0"
 
   identity_name        = azurerm_user_assigned_identity.vault_init.name
   identity_client_id   = azurerm_user_assigned_identity.vault_init.client_id
   identity_resource_id = azurerm_user_assigned_identity.vault_init.id
-
 }
 
 resource "helm_release" "vault" {
@@ -188,5 +195,4 @@ resource "helm_release" "vault_init" {
     "identityName"            = azurerm_user_assigned_identity.vault_init.name
     "nodeSelector"            = (length(var.kubernetes_node_selector) > 0 ? chomp(yamlencode(var.kubernetes_node_selector)) : "")
   })]
-
 }
