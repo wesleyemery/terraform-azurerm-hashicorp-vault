@@ -44,6 +44,8 @@ server:
         tls_disable = 1
         address = "[::]:8200"
         cluster_address = "[::]:8201"
+      }
+      listener "tcp" {
         telemetry {
           unauthenticated_metrics_access = true
         }
@@ -63,6 +65,8 @@ server:
           tls_disable = 1
           address = "[::]:8200"
           cluster_address = "[::]:8201"
+        }
+        listener "tcp" {
           telemetry {
             unauthenticated_metrics_access = true
           }
