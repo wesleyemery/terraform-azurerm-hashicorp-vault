@@ -44,6 +44,9 @@ server:
         tls_disable = 1
         address = "[::]:8200"
         cluster_address = "[::]:8201"
+        telemetry {
+          unauthenticated_metrics_access = true
+        }
       }
       seal "azurekeyvault" {
         tenant_id  = "${tenant_id}"
@@ -60,6 +63,9 @@ server:
           tls_disable = 1
           address = "[::]:8200"
           cluster_address = "[::]:8201"
+          telemetry {
+            unauthenticated_metrics_access = true
+          }
         }
         seal "azurekeyvault" {
           tenant_id  = "${tenant_id}"
