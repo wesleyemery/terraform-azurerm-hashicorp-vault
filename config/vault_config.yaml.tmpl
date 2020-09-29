@@ -48,6 +48,10 @@ server:
           unauthenticated_metrics_access = true
         }
       }
+      telemetry {
+        prometheus_retention_time = "30s",
+        disable_hostname = true
+      }
       seal "azurekeyvault" {
         tenant_id  = "${tenant_id}"
         vault_name = "${vault_name}"
@@ -66,6 +70,10 @@ server:
           telemetry {
             unauthenticated_metrics_access = true
           }
+        }
+        telemetry {
+          prometheus_retention_time = "30s",
+          disable_hostname = true
         }
         seal "azurekeyvault" {
           tenant_id  = "${tenant_id}"
