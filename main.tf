@@ -170,6 +170,7 @@ resource "helm_release" "vault" {
       enable_audit_storage     = var.vault_enable_audit_storage
       audit_storage_class      = var.vault_data_storage_class
       audit_storage_size       = var.vault_data_storage_size
+      enable_datadog_monitor   = var.vault_datadog_monitoring
     }),
     var.additional_yaml_config
   ]
