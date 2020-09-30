@@ -81,12 +81,6 @@ variable "vault_enable_raft_backend" {
   default     = true
 }
 
-variable "vault_datadog_monitoring" {
-  description = "enable datadog monitoring config"
-  type        = bool
-  default     = true
-}
-
 variable "vault_enable_ui" {
   description = "enable vault ui"
   type        = bool
